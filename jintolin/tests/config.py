@@ -23,3 +23,12 @@ app = {
 #
 # All configurations are accessible at::
 # pecan.conf
+
+# Database Configuration
+database = {
+    'type': 'mongodb',
+    'params': {
+        'host': 'localhost',
+        'database': 'jintolintest'
+    }
+}

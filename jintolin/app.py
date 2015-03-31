@@ -4,7 +4,7 @@ from jintolin import model
 
 def setup_app(config):
 
-    model.init_model()
+    model.init_model(config.database)
 
     return make_app(
         config.app.root,

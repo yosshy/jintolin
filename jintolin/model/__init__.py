@@ -1,15 +1,41 @@
-from pecan import conf  # noqa
+# JintoLin
+#
+# (c)2015  Akira Yoshiyama <akirayoshiyama@gmail.com>
+
+DATABASE = None
+CI = None
+CITYPE = None
+LOG = None
+PERSON = None
 
 
-def init_model():
+def init_model(database):
     """
-    This is a stub method which is called at application startup time.
+    Initialize database model
 
-    If you need to bind to a parse database configuration, set up tables or
-    ORM classes, or perform any database initialization, this is the
-    recommended place to do it.
-
-    For more information working with databases, and some common recipes,
-    see http://pecan.readthedocs.org/en/latest/databases.html
+    Params::
+    database = {
+        'type': 'mongodb',
+        'params': {
+            'host': 'localhost',
+            'database': 'jintolin'
+        }
+    }
     """
-    pass
+
+    _type = database.get('type')
+    params = dict(database.get('params'))
+
+    if _type is None:
+        raise Exception("Database configuration")
+
+    if _type == "mongodb":
+        from jintolin.model import mongodb
+        mongodb.init_model(**params)
+
+        global DATABASE, CI, CITYPE, LOG, PERSON
+        DATABASE = mongodb.DATABASE
+        CI = mongodb.CI
+        CITYPE = mongodb.CITYPE
+        PERSON = mongodb.PERSON
+        LOG = mongodb.LOG

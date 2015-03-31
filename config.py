@@ -17,6 +17,15 @@ app = {
     }
 }
 
+# Database configuration
+database = {
+    'type': 'mongodb',
+    'params': {
+        'host': 'localhost',
+        'database': 'jintolin'
+    }
+}
+
 logging = {
     'loggers': {
         'root': {'level': 'INFO', 'handlers': ['console']},
