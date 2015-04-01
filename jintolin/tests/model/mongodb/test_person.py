@@ -14,11 +14,11 @@ class MongodbPersonModelTestCase(model_base.MongodbBaseModelTestCase,
     collection = "person"
 
     sample1 = {
-        "name": "hoge",
-        "password": "fuga"
+        u"name": u"hoge",
+        u"password": u"fuga"
     }
 
     sample2 = {
-        "name": "foo",
-        "password": "bar"
+        u"name": u"foo",
+        u"password": u"bar"
     }

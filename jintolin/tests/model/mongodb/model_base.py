@@ -24,6 +24,10 @@ class MongodbBaseModelTestCase(object):
         self.id2 = self.get_new_id()
         if self.kwargs is None:
             self.kwargs = {}
+        self.sampleset = {
+            self.id1: self.sample1,
+            self.id2: self.sample2
+        }
 
     def _insert_data(self, doc_id, data, **kwargs):
         doc = {
@@ -50,18 +54,16 @@ class MongodbBaseModelTestCase(object):
         self._insert_data(self.id2, copy(self.sample2))
         docs = list(self.model.list())
         self.assertEqual(len(docs), 2)
-        self.assertEqual(self.sample1, docs[0][DATA])
-        self.assertEqual(self.sample2, docs[1][DATA])
+        self.assertEqual({x[ID]: x[DATA] for x in docs}, self.sampleset)
 
     def test_get(self):
 
         self._insert_data(self.id1, copy(self.sample1))
         self._insert_data(self.id2, copy(self.sample2))
-        docs = list(self.col.find())
-        doc1 = self.model.get(docs[0][ID])
-        doc2 = self.model.get(docs[1][ID])
-        self.assertEqual(self.sample1, doc1[DATA])
-        self.assertEqual(self.sample2, doc2[DATA])
+        doc1 = self.model.get(self.id1)
+        doc2 = self.model.get(self.id2)
+        self.assertEqual(doc1[DATA], self.sample1)
+        self.assertEqual(doc2[DATA], self.sample2)
         self.assertRaises(exc.DbNotFound,
                           self.model.get, self.get_new_id())
 
@@ -71,16 +73,13 @@ class MongodbBaseModelTestCase(object):
                                 **self.kwargs)
         id2 = self.model.create(data=self.sample2, operator="bar",
                                 **self.kwargs)
+        sampleset = {id1: self.sample1, id2: self.sample2}
         docs = list(self.col.find())
         self.assertEqual(len(docs), 2)
-        self.assertTrue(self.sample1, docs[0][DATA])
-        self.assertTrue(self.sample2, docs[1][DATA])
+        self.assertEqual({x[ID]: x[DATA] for x in docs}, sampleset)
         logs = list(self.DATABASE['log'].find())
         self.assertEqual(len(logs), 2)
-        self.assertEqual([id1, id2],
-                         [x[DOC_ID] for x in logs])
-        self.assertEqual([self.sample1, self.sample2],
-                         [x[DATA] for x in logs])
+        self.assertEqual({x[DOC_ID]: x[DATA] for x in logs}, sampleset)
         self.assertEqual(["created", "created"],
                          [x[LOG] for x in logs])
 
@@ -94,14 +93,10 @@ class MongodbBaseModelTestCase(object):
                           operator="bar", **self.kwargs)
         docs = list(self.col.find())
         self.assertEqual(len(docs), 2)
-        self.assertTrue(self.sample1, docs[0][DATA])
-        self.assertTrue(self.sample2, docs[1][DATA])
+        self.assertEqual({x[ID]: x[DATA] for x in docs}, self.sampleset)
         logs = list(self.DATABASE['log'].find())
         self.assertEqual(len(logs), 2)
-        self.assertEqual([self.id1, self.id2],
-                         [x[DOC_ID] for x in logs])
-        self.assertEqual([self.sample1, self.sample2],
-                         [x[DATA] for x in logs])
+        self.assertEqual({x[DOC_ID]: x[DATA] for x in logs}, self.sampleset)
         self.assertEqual(["updated", "updated"],
                          [x[LOG] for x in logs])
 
@@ -116,8 +111,8 @@ class MongodbBaseModelTestCase(object):
         self.assertEqual(0, self.col.count())
         logs = list(self.DATABASE['log'].find())
         self.assertEqual(len(logs), 2)
-        self.assertEqual([self.id1, self.id2],
-                         [x[DOC_ID] for x in logs])
+        self.assertEqual(set([x[DOC_ID] for x in logs]),
+                         set([self.id1, self.id2]))
         self.assertEqual(["deleted", "deleted"],
                          [x[LOG] for x in logs])
 

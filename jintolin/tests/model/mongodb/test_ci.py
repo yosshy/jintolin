@@ -16,28 +16,28 @@ class MongodbCiModelTestCase(model_base.MongodbBaseModelTestCase,
     collection = "ci"
 
     sample_schema = {
-        "type": "object",
-        "properties": {
-            "name": {"type": "string"},
-            "age": {"type": "integer"},
-            "email": {"type": "string"},
+        u"type": u"object",
+        u"properties": {
+            u"name": {u"type": u"string"},
+            u"age": {u"type": u"integer"},
+            u"email": {u"type": u"string"},
         },
-        "required": ["name"]
+        u"required": [u"name"]
     }
 
     sample1 = {
-        "name": "boo",
-        "age": 10,
+        u"name": u"boo",
+        u"age": 10,
     }
 
     sample2 = {
-        "name": "foo",
-        "email": "foo@localhost"
+        u"name": u"foo",
+        u"email": u"foo@localhost"
     }
 
     sample_bad = {
-        "name": "woo",
-        "age": "10",
+        u"name": u"woo",
+        u"age": u"10",
     }
 
     def setUp(self):

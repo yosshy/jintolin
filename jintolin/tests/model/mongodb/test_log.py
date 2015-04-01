@@ -61,8 +61,8 @@ class MongodbLogTestCase(base.TestCase):
         logs1 = list(self.DATABASE['log'].find({DOC_ID: id1}))
         self.assertEqual(len(logs), 4)
         self.assertEqual(len(logs1), 2)
-        self.assertEqual(["created", "updated", "created", "deleted"],
-                         [x[LOG] for x in logs])
+        self.assertEqual(set(["created", "updated", "created", "deleted"]),
+                         set([x[LOG] for x in logs]))
         self.assertTrue(DATA in logs1[0])
         self.assertEqual(logs1[0][DATA], sample)
         self.assertTrue(DATA not in logs1[1])

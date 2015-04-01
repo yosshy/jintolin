@@ -17,30 +17,30 @@ class MongodbCiTypeModelTestCase(model_base.MongodbBaseModelTestCase,
     collection = "citype"
 
     sample1 = {
-        "type": "object",
-        "properties": {
-            "name": {"type": "string"},
-            "email": {"type": "string"},
+        u"type": u"object",
+        u"properties": {
+            u"name": {u"type": u"string"},
+            u"email": {u"type": u"string"},
         },
-        "required": ["name"]
+        u"required": [u"name"]
     }
 
     sample2 = {
-        "type": "object",
-        "properties": {
-            "key": {"type": "string"},
-            "value": {"type": "integer"},
+        u"type": u"object",
+        u"properties": {
+            u"key": {u"type": u"string"},
+            u"value": {u"type": u"integer"},
         },
-        "required": ["key", "value"]
+        u"required": [u"key", u"value"]
     }
 
     sample_bad = {
-        "type": "object",
-        "properties": {
-            "name": {"type": "string"},
-            "email": {"type": "bad"},
+        u"type": u"object",
+        u"properties": {
+            u"name": {u"type": u"string"},
+            u"email": {u"type": u"bad"},
         },
-        "required": ["name"]
+        u"required": [u"name"]
     }
 
     def test_validate(self):
