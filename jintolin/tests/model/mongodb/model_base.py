@@ -1,4 +1,4 @@
-import copy
+from copy import copy
 from datetime import datetime
 
 from jintolin import exception as exc
@@ -46,8 +46,8 @@ class MongodbBaseModelTestCase(object):
 
     def test_list(self):
 
-        self._insert_data(self.id1, copy.copy(self.sample1))
-        self._insert_data(self.id2, copy.copy(self.sample2))
+        self._insert_data(self.id1, copy(self.sample1))
+        self._insert_data(self.id2, copy(self.sample2))
         docs = list(self.model.list())
         self.assertEqual(len(docs), 2)
         self.assertEqual(self.sample1, docs[0][DATA])
@@ -55,8 +55,8 @@ class MongodbBaseModelTestCase(object):
 
     def test_get(self):
 
-        self._insert_data(self.id1, copy.copy(self.sample1))
-        self._insert_data(self.id2, copy.copy(self.sample2))
+        self._insert_data(self.id1, copy(self.sample1))
+        self._insert_data(self.id2, copy(self.sample2))
         docs = list(self.col.find())
         doc1 = self.model.get(docs[0][ID])
         doc2 = self.model.get(docs[1][ID])
@@ -86,11 +86,11 @@ class MongodbBaseModelTestCase(object):
 
     def test_update(self):
 
-        self._insert_data(self.id1, copy.copy(self.sample2))
-        self._insert_data(self.id2, copy.copy(self.sample1))
-        self.model.update(self.id1, data=copy.copy(self.sample1),
+        self._insert_data(self.id1, copy(self.sample2))
+        self._insert_data(self.id2, copy(self.sample1))
+        self.model.update(self.id1, data=copy(self.sample1),
                           operator="foo", **self.kwargs)
-        self.model.update(self.id2, data=copy.copy(self.sample2),
+        self.model.update(self.id2, data=copy(self.sample2),
                           operator="bar", **self.kwargs)
         docs = list(self.col.find())
         self.assertEqual(len(docs), 2)
@@ -107,8 +107,8 @@ class MongodbBaseModelTestCase(object):
 
     def test_delete(self):
 
-        self._insert_data(self.id1, copy.copy(self.sample1))
-        self._insert_data(self.id2, copy.copy(self.sample2))
+        self._insert_data(self.id1, copy(self.sample1))
+        self._insert_data(self.id2, copy(self.sample2))
         docs = list(self.col.find())
         self.assertEqual(2, self.col.count())
         doc1 = self.model.delete(self.id1)
@@ -123,9 +123,9 @@ class MongodbBaseModelTestCase(object):
 
     def test_get_logs(self):
         self._insert_log(self.id1, "created",
-                         data=copy.copy(self.sample1))
+                         data=copy(self.sample1))
         self._insert_log(self.id1, "updated",
-                         data=copy.copy(self.sample2))
+                         data=copy(self.sample2))
         self._insert_log(self.id1, "deleted")
 
         logs = list(self.model.get_logs(self.id1))
