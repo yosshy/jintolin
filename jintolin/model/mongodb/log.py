@@ -2,7 +2,6 @@
 #
 # (c)2015  Akira Yoshiyama <akirayoshiyama@gmail.com>
 
-from datetime import datetime
 import uuid
 
 import pymongo
@@ -57,15 +56,15 @@ class LogModel(object):
         Adds a new entries to DB.
         Returns its ID.
         """
-        doc = {
+        log_doc = {
             ID: self.get_new_id(),
             DOC_ID: doc[ID],
             TIMESTAMP: doc[TIMESTAMP],
             LOG: log
         }
-        doc.update(kwargs)
+        log_doc.update(kwargs)
 
-        self.col.insert(doc)
+        self.col.insert(log_doc)
 
     def delete(self, cond=None):
         """

@@ -25,6 +25,13 @@ class BaseModel(object):
         setattr(self.db, self.collection, self)
 
     @staticmethod
+    def now():
+        """
+        Returns an new ID.
+        """
+        return datetime.now()
+
+    @staticmethod
     def get_new_id():
         """
         Returns an new ID.
@@ -67,7 +74,7 @@ class BaseModel(object):
         id = self.get_new_id()
         doc = {
             ID: id,
-            TIMESTAMP: datetime.now(),
+            TIMESTAMP: self.now(),
             DATA: data
         }
         doc.update(kwargs)
@@ -90,7 +97,7 @@ class BaseModel(object):
         # Overwrite attributes
         doc = {
             ID: id,
-            TIMESTAMP: datetime.now(),
+            TIMESTAMP: self.now(),
             DATA: data
         }
         doc.update(kwargs)
@@ -105,7 +112,7 @@ class BaseModel(object):
         """
         doc = {
             ID: id,
-            TIMESTAMP: datetime.now(),
+            TIMESTAMP: self.now(),
         }
         self.col.remove(id)
         self.db.log.create(doc, "deleted",

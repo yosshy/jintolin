@@ -3,7 +3,6 @@
 # (c)2015  Akira Yoshiyama <akirayoshiyama@gmail.com>
 
 from copy import copy
-from datetime import datetime
 
 import jsonschema
 
@@ -43,7 +42,7 @@ class CiTypeModel(base.BaseModel):
 
         # Ok, add linkable_id to LINKABLE list.
         linkable.append(linkable_id)
-        doc[TIMESTAMP] = datetime.now()
+        doc[TIMESTAMP] = self.now()
         doc[LINKABLE] = linkable
         self.col.update({ID: id}, doc)
         self.db.log.create(doc, "add linkable",
@@ -63,7 +62,7 @@ class CiTypeModel(base.BaseModel):
 
         # Ok, add linkable_id to LINKABLE list.
         linkable.remove(linkable_id)
-        doc[TIMESTAMP] = datetime.now()
+        doc[TIMESTAMP] = self.now()
         doc[LINKABLE] = linkable
         self.col.update({ID: id}, doc)
         self.db.log.create(doc, "delete linkable",

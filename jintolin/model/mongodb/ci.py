@@ -2,7 +2,6 @@
 #
 # (c)2015  Akira Yoshiyama <akirayoshiyama@gmail.com>
 
-from datetime import datetime
 import jsonschema
 
 from jintolin.model.mongodb import base
@@ -72,7 +71,7 @@ class CiModel(base.BaseModel):
 
         # Ok, link it
         link.append(linked_id)
-        doc[TIMESTAMP] = datetime.now()
+        doc[TIMESTAMP] = self.now()
         doc[LINK] = link
         result = self.col.update({ID: id}, doc)
         self.db.log.create(doc, "linked",
