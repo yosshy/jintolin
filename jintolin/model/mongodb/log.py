@@ -8,13 +8,8 @@ import uuid
 import pymongo
 
 from jintolin import exception as exc
-
-ID = u"_id"
-DOC_ID = u"did"
-LOG = u"l"
-TIMESTAMP = u"ts"
-OPERATOR = u"op"
-DATA = u"data"
+from jintolin.model.mongodb.const import (
+    ID, DOC_ID, LOG, TIMESTAMP, OPERATOR, DATA)
 
 
 class LogModel(object):

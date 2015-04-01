@@ -8,11 +8,8 @@ import uuid
 import pymongo
 
 from jintolin import exception as exc
-
-ID = u"_id"
-TIMESTAMP = u"ts"
-DATA = u"data"
-DOC_ID = u"did"
+from jintolin.model.mongodb.const import (
+    ID, DOC_ID, DATA, TIMESTAMP)
 
 
 class BaseModel(object):
@@ -35,8 +32,7 @@ class BaseModel(object):
         return str(uuid.uuid4())
 
     def list(self, cond=None):
-        """
-        Returns a list of entries.
+        """ Returns a list of entries.
         """
         if cond is None:
             cond = {}

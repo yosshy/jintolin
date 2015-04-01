@@ -4,13 +4,8 @@ from unittest import TestCase
 from jintolin import exception as exc
 from jintolin.tests.model.mongodb import base
 from jintolin.tests.model.mongodb import model_base
-
-ID = u'_id'
-DOC_ID = u'did'
-TIMESTAMP = u'ts'
-LOG = u'l'
-DATA = u'data'
-OPERATOR = u'o'
+from jintolin.model.mongodb.const import (
+    ID, DOC_ID, TIMESTAMP, LOG, DATA, OPERATOR)
 
 
 class MongodbCiTypeModelTestCase(model_base.MongodbBaseModelTestCase,

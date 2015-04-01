@@ -2,13 +2,9 @@ import copy
 from datetime import datetime
 
 from jintolin import exception as exc
+from jintolin.model.mongodb.const import (
+    ID, DOC_ID, TIMESTAMP, LOG, DATA, OPERATOR)
 
-ID = u'_id'
-DOC_ID = u'did'
-TIMESTAMP = u'ts'
-LOG = u'l'
-DATA = u'data'
-OPERATOR = u'o'
 
 class MongodbBaseModelTestCase(object):
 

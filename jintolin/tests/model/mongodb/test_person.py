@@ -3,13 +3,8 @@ from unittest import TestCase
 
 from jintolin.tests.model.mongodb import base
 from jintolin.tests.model.mongodb import model_base
-
-ID = u'_id'
-DOC_ID = u'did'
-TIMESTAMP = u'ts'
-LOG = u'l'
-DATA = u'data'
-OPERATOR = u'o'
+from jintolin.model.mongodb.const import (
+    ID, DOC_ID, TIMESTAMP, LOG, DATA, OPERATOR)
 
 
 class MongodbPersonModelTestCase(model_base.MongodbBaseModelTestCase,

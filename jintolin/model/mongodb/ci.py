@@ -5,10 +5,8 @@
 import jsonschema
 
 from jintolin.model.mongodb import base
+from jintolin.model.mongodb.const import CITYPE_ID, DATA
 from jintolin import exception as exc
-
-CITYPE_ID = 'tid'
-DATA = 'data'
 
 
 class CiModel(base.BaseModel):
