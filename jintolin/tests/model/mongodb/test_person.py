@@ -8,7 +8,7 @@ from jintolin.model.mongodb.const import (
 
 
 class MongodbPersonModelTestCase(model_base.MongodbBaseModelTestCase,
-        base.TestCase):
+                                 base.TestCase):
 
     model_attr = "PERSON"
     collection = "person"

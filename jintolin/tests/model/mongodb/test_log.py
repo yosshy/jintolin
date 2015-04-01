@@ -76,7 +76,7 @@ class MongodbLogTestCase(base.TestCase):
         self._insert_data(id2, "created", data=sample)
         self._insert_data(id2, "deleted")
         self.assertEqual(self.DATABASE['log'].count(), 4)
-        self.LOG.delete({DOC_ID: id1})  
+        self.LOG.delete({DOC_ID: id1})
         self.assertEqual(self.DATABASE['log'].count(), 2)
         self.LOG.delete()
         self.assertEqual(self.DATABASE['log'].count(), 0)
