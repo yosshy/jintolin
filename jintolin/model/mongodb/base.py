@@ -44,7 +44,7 @@ class BaseModel(object):
         if cond is None:
             cond = {}
 
-        return self.col.find(cond)
+        return list(self.col.find(cond))
 
     def get(self, id):
         """
