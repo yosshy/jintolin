@@ -2,10 +2,12 @@
 #
 # (c)2015  Akira Yoshiyama <akirayoshiyama@gmail.com>
 
+from datetime import datetime
 import jsonschema
 
 from jintolin.model.mongodb import base
-from jintolin.model.mongodb.const import CITYPE_ID, DATA
+from jintolin.model.mongodb.const import (
+    ID, CITYPE_ID, DATA, LINK, LINKABLE, TIMESTAMP)
 from jintolin import exception as exc
 
 
@@ -23,7 +25,7 @@ class CiModel(base.BaseModel):
 
         return super(CiModel, self).list(cond=cond)
 
-    def validate(self, data, citype_id=None):
+    def validate(self, data, citype_id=None, **kwargs):
         """
         Verifies data with schema specified by 'citype_id'.
         Raises ValidationError if data are invalid.
@@ -39,3 +41,72 @@ class CiModel(base.BaseModel):
             jsonschema.validate(data, schema)
         except jsonschema.ValidationError as e:
             raise exc.ValidationError()
+
+    def link(self, id, linked_id, operator=None):
+        """
+        Adds linked_id to doc[LINK] list.
+        """
+        doc = self.get(id)
+        citype_id = doc[CITYPE_ID]
+        citype = self.db.citype.get(citype_id)
+        link = doc.get(LINK, [])
+
+        # Link not allowd if already linked from local
+        if linked_id in link:
+            raise exc.LinkError()
+
+        linked_doc = self.get(linked_id)
+        linked_citype_id = linked_doc[CITYPE_ID]
+        linked_citype = self.db.citype.get(linked_citype_id)
+        linked_link = linked_doc.get(LINK, [])
+
+        # Link not allowed if already linked from remote
+        if id in linked_link:
+            raise exc.LinkError()
+
+        # Link not allowed if both CI type ID doesn't exist
+        # at LINKABLE list of the other
+        if linked_citype_id not in citype[LINKABLE] and \
+           citype_id not in linked_citype[LINKABLE]:
+            raise exc.LinkError()
+
+        # Ok, link it
+        link.append(linked_id)
+        doc[TIMESTAMP] = datetime.now()
+        doc[LINK] = link
+        result = self.col.update({ID: id}, doc)
+        self.db.log.create(doc, "linked",
+                           operator=operator,
+                           linked=linked_id)
+
+    def unlink(self, id, linked_id, operator=None):
+        """
+        Removes linked_id to doc[LINK] list.
+        """
+        doc = self.get(id)
+        data = doc[DATA]
+        citype = doc[CITYPE_ID]
+        link = doc.get(LINK, [])
+
+        if linked_id in link:
+            link.remove(linked_id)
+            result = self.col.update({ID: id}, doc)
+            self.db.log.create(doc, "unlinked",
+                               operator=operator,
+                               linked=linked_id)
+            return
+
+        linked_doc = self.get(linked_id)
+        linked_citype = linked_doc[CITYPE_ID]
+        linked_link = linked_doc.get(LINK, [])
+
+        if id in linked_link:
+            linked_link.remove(id)
+            result = self.col.update({ID: linked_id}, linked_doc)
+            self.db.log.create(linked_doc, "unlinked",
+                               operator=operator,
+                               linked=id)
+            return
+
+        # Not linked from both
+        raise exc.LinkError()
