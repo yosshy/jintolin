@@ -2,18 +2,12 @@ import copy
 import unittest
 import uuid
 
+from jintolin.tests import FunctionalTest
+
 from jintolin import model
 
 
-class TestCase(unittest.TestCase):
-
-    database = {
-        'type': 'mongodb',
-        'params': {
-            'host': 'localhost',
-            'database': 'jintolintest'
-        }
-    }
+class TestCase(FunctionalTest):
 
     @staticmethod
     def get_new_id():
@@ -23,7 +17,7 @@ class TestCase(unittest.TestCase):
         return str(uuid.uuid4())
 
     def setUp(self):
-        model.init_model(copy.copy(self.database))
+        super(TestCase, self).setUp()
         self.DATABASE = model.DATABASE
         self.CI = model.CI
         self.CITYPE = model.CITYPE
@@ -33,6 +27,7 @@ class TestCase(unittest.TestCase):
 
     def tearDown(self):
         self.remove_docs()
+        super(TestCase, self).tearDown()
 
     def remove_docs(self):
         for i in ['ci', 'citype', 'person', 'log']:

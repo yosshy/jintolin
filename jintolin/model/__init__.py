@@ -2,6 +2,9 @@
 #
 # (c)2015  Akira Yoshiyama <akirayoshiyama@gmail.com>
 
+from pecan import conf
+
+
 DATABASE = None
 CI = None
 CITYPE = None
@@ -9,22 +12,13 @@ LOG = None
 PERSON = None
 
 
-def init_model(database):
+def init_model():
     """
     Initialize database model
-
-    Params::
-    database = {
-        'type': 'mongodb',
-        'params': {
-            'host': 'localhost',
-            'database': 'jintolin'
-        }
-    }
     """
 
-    _type = database.get('type')
-    params = dict(database.get('params'))
+    _type = conf.database.get('type')
+    params = dict(conf.database.get('params'))
 
     if _type is None:
         raise Exception("Database configuration")
