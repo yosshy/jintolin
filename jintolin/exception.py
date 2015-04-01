@@ -3,7 +3,11 @@
 # (c)2015  Akira Yoshiyama <akirayoshiyama@gmail.com>
 
 
-class DbError(Exception):
+class JintolinException(Exception):
+    pass
+
+
+class DbError(JintolinException):
     pass
 
 
@@ -11,5 +15,13 @@ class DbNotFound(DbError):
     pass
 
 
-class ValidationError(Exception):
+class ValidationError(JintolinException):
+    pass
+
+
+class LinkError(DbError):
+    pass
+
+
+class LinkableError(DbError):
     pass
