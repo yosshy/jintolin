@@ -99,7 +99,7 @@ class MongodbCiModelTestCase(model_base.MongodbBaseModelTestCase,
         self.assertRaises(exc.LinkError,
                           self.model.link, self.id1, self.id1)
 
-        self.assertRaises(exc.DbNotFound,
+        self.assertRaises(exc.NotFound,
                           self.model.link, self.id1, self.get_new_id())
 
     def test_unlink(self):
@@ -118,5 +118,5 @@ class MongodbCiModelTestCase(model_base.MongodbBaseModelTestCase,
         self.assertRaises(exc.LinkError,
                           self.model.unlink, self.id1, self.id2)
 
-        self.assertRaises(exc.DbNotFound,
+        self.assertRaises(exc.NotFound,
                           self.model.unlink, self.id1, self.get_new_id())

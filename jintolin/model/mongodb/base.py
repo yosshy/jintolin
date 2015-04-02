@@ -51,7 +51,7 @@ class BaseModel(object):
         """
         data = self.col.find_one({ID: id})
         if data is None:
-            raise exc.DbNotFound()
+            raise exc.NotFound()
 
         return data
 
@@ -134,5 +134,5 @@ class BaseModel(object):
 
         logs = list(self.db.log.list(cond=cond))
         if len(logs) == 0:
-            raise exc.DbNotFound()
+            raise exc.NotFound()
         return logs

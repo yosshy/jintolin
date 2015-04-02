@@ -67,7 +67,7 @@ class MongodbCiTypeModelTestCase(model_base.MongodbBaseModelTestCase,
         self.assertRaises(exc.LinkableError,
                           self.model.add_linkable, self.id2, self.id1)
 
-        self.assertRaises(exc.DbNotFound,
+        self.assertRaises(exc.NotFound,
                           self.model.add_linkable, self.id1, self.get_new_id())
 
     def test_delete_linkable(self):
@@ -84,6 +84,6 @@ class MongodbCiTypeModelTestCase(model_base.MongodbBaseModelTestCase,
         self.assertRaises(exc.LinkableError,
                           self.model.delete_linkable, self.id1, self.id2)
 
-        self.assertRaises(exc.DbNotFound,
+        self.assertRaises(exc.NotFound,
                           self.model.delete_linkable,
                           self.get_new_id(), self.id1)

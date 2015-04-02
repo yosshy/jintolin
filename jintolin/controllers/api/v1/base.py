@@ -27,13 +27,13 @@ class BaseController(RestController):
         if type == 'log':
             try:
                 return self.model.get_logs(id)
-            except exc.DbNotFound:
+            except exc.NotFound:
                 abort(404)
 
         if type is None:
             try:
                 return self.model.get(id)
-            except exc.DbNotFound:
+            except exc.NotFound:
                 abort(404)
 
     @expose('json')
@@ -51,12 +51,12 @@ class BaseController(RestController):
             self.model.update(id, data)
         except exc.ValidationError:
             abort(400)
-        except exc.DbNotFound:
+        except exc.NotFound:
             abort(404)
 
     @expose('json')
     def delete(self, id):
         try:
             self.model.delete(id)
-        except exc.DbNotFound:
+        except exc.NotFound:
             abort(404)

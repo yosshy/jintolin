@@ -64,7 +64,7 @@ class MongodbBaseModelTestCase(object):
         doc2 = self.model.get(self.id2)
         self.assertEqual(doc1[DATA], self.sample1)
         self.assertEqual(doc2[DATA], self.sample2)
-        self.assertRaises(exc.DbNotFound,
+        self.assertRaises(exc.NotFound,
                           self.model.get, self.get_new_id())
 
     def test_create(self):
@@ -99,7 +99,7 @@ class MongodbBaseModelTestCase(object):
         self.assertEqual({x[DOC_ID]: x[DATA] for x in logs}, self.sampleset)
         self.assertEqual(["updated", "updated"],
                          [x[LOG] for x in logs])
-        self.assertRaises(exc.DbNotFound,
+        self.assertRaises(exc.NotFound,
                           self.model.update,
                           self.get_new_id(), data=copy(self.sample1),
                           operator="foo", **self.kwargs)

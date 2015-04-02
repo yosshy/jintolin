@@ -45,7 +45,7 @@ class MongodbLogTestCase(base.TestCase):
         log2 = self.LOG.get(logs[1][ID])
         self.assertEqual(log1[DATA], sample)
         self.assertTrue(DATA not in log2)
-        self.assertRaises(exc.DbNotFound,
+        self.assertRaises(exc.NotFound,
                           self.LOG.get, self.get_new_id())
 
     def test_create(self):

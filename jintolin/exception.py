@@ -11,7 +11,7 @@ class DbError(JintolinException):
     pass
 
 
-class DbNotFound(DbError):
+class NotFound(DbError):
     pass
 
 

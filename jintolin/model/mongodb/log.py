@@ -47,7 +47,7 @@ class LogModel(object):
         doc = self.col.find_one(id)
 
         if doc is None:
-            raise exc.DbNotFound()
+            raise exc.NotFound()
 
         return doc
 

@@ -22,7 +22,7 @@ class CiController(BaseController):
             return {'id': self.model.create(data, citype_id=citype_id)}
         except exc.ValidationError:
             abort(400)
-        except exc.DbNotFound:
+        except exc.NotFound:
             abort(404)
 
     @expose('json')
@@ -32,5 +32,5 @@ class CiController(BaseController):
             self.model.update(id, data, citype_id=citype_id)
         except exc.ValidationError:
             abort(400)
-        except exc.DbNotFound:
+        except exc.NotFound:
             abort(404)
