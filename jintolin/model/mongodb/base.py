@@ -91,6 +91,9 @@ class BaseModel(object):
         """
         Updates an entry on DB specified by 'id'.
         """
+        # Check document exists
+        self.get(id)
+
         # Verify data
         self.validate(data, **kwargs)
 
@@ -110,6 +113,10 @@ class BaseModel(object):
         """
         Deletes an entry on DB specified by 'id'.
         """
+        # Check document exists
+        self.get(id)
+
+        # delete doc
         doc = {
             ID: id,
             TIMESTAMP: self.now(),
@@ -125,4 +132,8 @@ class BaseModel(object):
         if not isinstance(cond, dict):
             cond = {}
         cond[DOC_ID] = id
-        return self.db.log.list(cond=cond)
+
+        logs = list(self.db.log.list(cond=cond))
+        if len(logs) == 0:
+            raise exc.DbNotFound()
+        return logs

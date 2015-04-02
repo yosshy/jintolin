@@ -99,6 +99,10 @@ class MongodbBaseModelTestCase(object):
         self.assertEqual({x[DOC_ID]: x[DATA] for x in logs}, self.sampleset)
         self.assertEqual(["updated", "updated"],
                          [x[LOG] for x in logs])
+        self.assertRaises(exc.DbNotFound,
+                          self.model.update,
+                          self.get_new_id(), data=copy(self.sample1),
+                          operator="foo", **self.kwargs)
 
     def test_delete(self):
 
