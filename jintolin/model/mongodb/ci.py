@@ -24,11 +24,31 @@ class CiModel(base.BaseModel):
 
         return super(CiModel, self).list(cond=cond)
 
-    def validate(self, data, citype_id=None, **kwargs):
+    def create(self, data, operator=None, citype_id=None):
+        """
+        Adds a new entries to DB.
+        Returns its ID.
+        """
+        kwargs = {CITYPE_ID: citype_id}
+        return super(CiModel, self).create(data,
+                                           operator=operator,
+                                           **kwargs)
+
+    def update(self, id, data, operator=None, citype_id=None):
+        """
+        Updates an entry on DB specified by 'id'.
+        """
+        kwargs = {CITYPE_ID: citype_id}
+        return super(CiModel, self).update(id, data,
+                                           operator=operator,
+                                           **kwargs)
+
+    def validate(self, data, **kwargs):
         """
         Verifies data with schema specified by 'citype_id'.
         Raises ValidationError if data are invalid.
         """
+        citype_id = kwargs.get(CITYPE_ID)
         if citype_id is None:
             raise exc.ValidationError()
 

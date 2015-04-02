@@ -74,13 +74,12 @@ class MongodbCiModelTestCase(model_base.MongodbBaseModelTestCase,
         self.assertEqual(0, len(list(self.model.list(self.get_new_id()))))
 
     def test_validate(self):
-        self.model.validate(self.sample1, self.citype_id1)
-        self.model.validate(self.sample2, self.citype_id1)
-        self.assertRaises(exc.ValidationError,
-                          self.model.validate, self.sample1)
+        kwargs = {CITYPE_ID: self.citype_id1}
+        self.model.validate(self.sample1, **kwargs)
+        self.model.validate(self.sample2, **kwargs)
         self.assertRaises(exc.ValidationError,
                           self.model.validate,
-                          self.sample_bad, self.citype_id1)
+                          self.sample_bad, **kwargs)
 
     def test_link(self):
         self._insert_data(self.id1, copy(self.sample1))
