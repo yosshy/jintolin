@@ -6,7 +6,7 @@ from jintolin.tests.controller.v1.base import TestApiV1BaseController
 
 class TestApiV1CiController(TestApiV1BaseController, FunctionalTest):
 
-    modelname = "CI"
+    model_name = "CI"
     baseurl = "/api/v1/ci/"
     posturl = "/api/v1/ci?citype_id=%s"
     puturl = "/api/v1/ci/%s?citype_id=%s"
@@ -54,7 +54,7 @@ class TestApiV1CiController(TestApiV1BaseController, FunctionalTest):
         self.citype_id1 = model.CITYPE.create(self.sample_citype1)
         self.citype_id2 = model.CITYPE.create(self.sample_citype2)
 
-        self.model = getattr(model, self.modelname)
+        self.model = getattr(model, self.model_name)
         self.id1 = self.model.create(self.sample1, citype_id=self.citype_id1)
         self.id2 = self.model.create(self.sample2, citype_id=self.citype_id2)
         self.sampleset = {

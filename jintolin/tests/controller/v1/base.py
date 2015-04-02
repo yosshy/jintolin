@@ -9,13 +9,13 @@ class TestApiV1BaseController(object):
     sample2 = None
     sample3 = None
     badsample = None
-    modelname = None
+    model_name = None
     baseurl = None
 
     def setUp(self):
         super(TestApiV1BaseController, self).setUp()
 
-        self.model = getattr(model, self.modelname)
+        self.model = getattr(model, self.model_name)
         self.id1 = self.model.create(self.sample1)
         self.id2 = self.model.create(self.sample2)
         self.sampleset = {

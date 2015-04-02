@@ -4,7 +4,7 @@ from jintolin.tests.controller.v1.base import TestApiV1BaseController
 
 class TestApiV1CitypeController(TestApiV1BaseController, FunctionalTest):
 
-    modelname = "CITYPE"
+    model_name = "CITYPE"
     baseurl = "/api/v1/citype/"
 
     sample1 = {
