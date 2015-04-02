@@ -79,6 +79,9 @@ class MongodbCiModelTestCase(model_base.MongodbBaseModelTestCase,
         self.model.validate(self.sample2, **kwargs)
         self.assertRaises(exc.ValidationError,
                           self.model.validate,
+                          self.sample_bad)
+        self.assertRaises(exc.ValidationError,
+                          self.model.validate,
                           self.sample_bad, **kwargs)
 
     def test_link(self):
