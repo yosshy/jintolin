@@ -1,4 +1,9 @@
+# Jinto Lin
+#
+# (c)2015  Akira Yoshiyama <akirayoshiyama@gmail.com>
+
 from pecan import make_app
+
 from jintolin import model
 
 

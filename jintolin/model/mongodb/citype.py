@@ -6,10 +6,9 @@ from copy import copy
 
 import jsonschema
 
-from jintolin.model.mongodb import base
 from jintolin import exception as exc
-from jintolin.model.mongodb.const import (
-    ID, LINKABLE, TIMESTAMP)
+from jintolin.model.mongodb import base
+from jintolin.model.mongodb.const import ID, LINKABLE, TIMESTAMP
 
 
 class CiTypeModel(base.BaseModel):

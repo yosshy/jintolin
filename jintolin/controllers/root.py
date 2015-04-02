@@ -1,3 +1,7 @@
+# Jinto Lin
+#
+# (c)2015  Akira Yoshiyama <akirayoshiyama@gmail.com>
+
 from pecan import expose, redirect
 from webob.exc import status_map
 

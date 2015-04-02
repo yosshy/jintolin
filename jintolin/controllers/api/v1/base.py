@@ -1,3 +1,7 @@
+# Jinto Lin
+#
+# (c)2015  Akira Yoshiyama <akirayoshiyama@gmail.com>
+
 from pecan.core import abort, request
 from pecan import expose
 from pecan.rest import RestController

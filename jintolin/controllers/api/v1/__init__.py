@@ -1,3 +1,7 @@
+# Jinto Lin
+#
+# (c)2015  Akira Yoshiyama <akirayoshiyama@gmail.com>
+
 from pecan.rest import RestController
 
 from jintolin.controllers.api.v1.ci import CiController
