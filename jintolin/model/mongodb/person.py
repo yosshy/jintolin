@@ -6,10 +6,6 @@ from jintolin import exception as exc
 from jintolin.model.mongodb import base
 
 
-NAME = "name"
-PASS = "password"
-
-
 class PersonModel(base.BaseModel):
 
     collection = 'person'
