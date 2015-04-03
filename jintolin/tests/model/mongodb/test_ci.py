@@ -6,7 +6,7 @@ from jintolin import exception as exc
 from jintolin.tests.model.mongodb import base
 from jintolin.tests.model.mongodb import model_base
 from jintolin.model.mongodb.const import (
-    ID, DOC_ID, CITYPE_ID, TIMESTAMP, LOG, DATA, OPERATOR, LINK, LINKABLE)
+    ID, DOC_ID, CITYPE_ID, TIMESTAMP, LOG, DATA, OPERATOR, LINK)
 
 
 class MongodbCiModelTestCase(model_base.MongodbBaseModelTestCase,
@@ -47,13 +47,11 @@ class MongodbCiModelTestCase(model_base.MongodbBaseModelTestCase,
         self.DATABASE["citype"].insert({
             ID: self.citype_id1,
             TIMESTAMP: datetime.now(),
-            LINKABLE: [self.citype_id2],
             DATA: self.sample_schema
         })
         self.DATABASE["citype"].insert({
             ID: self.citype_id2,
             TIMESTAMP: datetime.now(),
-            LINKABLE: [self.citype_id1],
             DATA: self.sample_schema
         })
         self.kwargs = dict(citype_id=self.citype_id1)
@@ -74,15 +72,14 @@ class MongodbCiModelTestCase(model_base.MongodbBaseModelTestCase,
         self.assertEqual(0, len(list(self.model.list(self.get_new_id()))))
 
     def test_validate(self):
-        kwargs = {CITYPE_ID: self.citype_id1}
-        self.model.validate(self.sample1, **kwargs)
-        self.model.validate(self.sample2, **kwargs)
+        self.model.validate(self.sample1, **{CITYPE_ID: self.citype_id1})
+        self.model.validate(self.sample2, **{CITYPE_ID: self.citype_id1})
         self.assertRaises(exc.ValidationError,
                           self.model.validate,
                           self.sample_bad)
         self.assertRaises(exc.ValidationError,
                           self.model.validate,
-                          self.sample_bad, **kwargs)
+                          self.sample_bad, **{CITYPE_ID: self.citype_id1})
 
     def test_link(self):
         self._insert_data(self.id1, copy(self.sample1))
@@ -98,9 +95,6 @@ class MongodbCiModelTestCase(model_base.MongodbBaseModelTestCase,
 
         self.assertRaises(exc.LinkError,
                           self.model.link, self.id2, self.id1)
-
-        self.assertRaises(exc.LinkError,
-                          self.model.link, self.id1, self.id1)
 
         self.assertRaises(exc.NotFound,
                           self.model.link, self.id1, self.get_new_id())

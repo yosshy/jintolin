@@ -21,7 +21,3 @@ class ValidationError(JintolinException):
 
 class LinkError(DbError):
     pass
-
-
-class LinkableError(DbError):
-    pass

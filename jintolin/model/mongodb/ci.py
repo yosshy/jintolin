@@ -6,7 +6,7 @@ import jsonschema
 
 from jintolin.model.mongodb import base
 from jintolin.model.mongodb.const import (
-    ID, CITYPE_ID, DATA, LINK, LINKABLE, TIMESTAMP)
+    ID, CITYPE_ID, DATA, LINK, TIMESTAMP)
 from jintolin import exception as exc
 
 
@@ -29,19 +29,17 @@ class CiModel(base.BaseModel):
         Adds a new entries to DB.
         Returns its ID.
         """
-        kwargs = {CITYPE_ID: citype_id}
         return super(CiModel, self).create(data,
                                            operator=operator,
-                                           **kwargs)
+                                           **{CITYPE_ID: citype_id})
 
     def update(self, id, data, operator=None, citype_id=None):
         """
         Updates an entry on DB specified by 'id'.
         """
-        kwargs = {CITYPE_ID: citype_id}
         return super(CiModel, self).update(id, data,
                                            operator=operator,
-                                           **kwargs)
+                                           **{CITYPE_ID: citype_id})
 
     def validate(self, data, **kwargs):
         """
@@ -81,12 +79,6 @@ class CiModel(base.BaseModel):
 
         # Link not allowed if already linked from remote
         if id in linked_link:
-            raise exc.LinkError()
-
-        # Link not allowed if both CI type ID doesn't exist
-        # at LINKABLE list of the other
-        if linked_citype_id not in citype[LINKABLE] and \
-           citype_id not in linked_citype[LINKABLE]:
             raise exc.LinkError()
 
         # Ok, link it

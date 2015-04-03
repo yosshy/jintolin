@@ -8,7 +8,7 @@ import uuid
 import pymongo
 
 from jintolin import exception as exc
-from jintolin.model.mongodb.const import ID, DOC_ID, DATA, TIMESTAMP
+from jintolin.model.mongodb.const import ID, DOC_ID, DATA, OPERATOR, TIMESTAMP
 
 
 class BaseModel(object):
@@ -78,11 +78,7 @@ class BaseModel(object):
         }
         doc.update(kwargs)
         self.col.insert(doc)
-        self.db.log.create(doc, "created",
-                           operator=operator,
-                           data=data,
-                           **kwargs)
-
+        self.db.log.create(doc, "created", **{OPERATOR: operator, DATA: data})
         # Return ID
         return id
 
@@ -104,9 +100,7 @@ class BaseModel(object):
         }
         doc.update(kwargs)
         result = self.col.update({ID: id}, doc)
-        self.db.log.create(doc, "updated",
-                           operator=operator,
-                           data=data)
+        self.db.log.create(doc, "updated", **{OPERATOR: operator, DATA: data})
 
     def delete(self, id, operator=None):
         """
@@ -121,8 +115,7 @@ class BaseModel(object):
             TIMESTAMP: self.now(),
         }
         self.col.remove(id)
-        self.db.log.create(doc, "deleted",
-                           operator=operator)
+        self.db.log.create(doc, "deleted", **{OPERATOR: operator})
 
     def get_logs(self, id, cond=None):
         """

@@ -121,10 +121,8 @@ class MongodbBaseModelTestCase(object):
                          [x[LOG] for x in logs])
 
     def test_get_logs(self):
-        self._insert_log(self.id1, "created",
-                         data=copy(self.sample1))
-        self._insert_log(self.id1, "updated",
-                         data=copy(self.sample2))
+        self._insert_log(self.id1, "created", **{DATA: copy(self.sample1)})
+        self._insert_log(self.id1, "updated", **{DATA: copy(self.sample2)})
         self._insert_log(self.id1, "deleted")
 
         logs = list(self.model.get_logs(self.id1))
