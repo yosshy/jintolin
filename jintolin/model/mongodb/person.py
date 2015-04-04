@@ -10,7 +10,7 @@ class PersonModel(base.BaseModel):
 
     collection = 'person'
 
-    def validate(self, data, **kwargs):
+    def validate(self, data, **extra_attr):
         """
         Verifies person
         """

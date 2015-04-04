@@ -51,7 +51,7 @@ class LogModel(object):
 
         return doc
 
-    def create(self, doc, log, **kwargs):
+    def create(self, doc, log, **extra_attr):
         """
         Adds a new entries to DB.
         Returns its ID.
@@ -62,7 +62,7 @@ class LogModel(object):
             TIMESTAMP: doc[TIMESTAMP],
             LOG: log
         }
-        log_doc.update(kwargs)
+        log_doc.update(extra_attr)
 
         self.col.insert(log_doc)
 

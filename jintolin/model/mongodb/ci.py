@@ -41,12 +41,12 @@ class CiModel(base.BaseModel):
                                            operator=operator,
                                            **{CITYPE_ID: citype_id})
 
-    def validate(self, data, **kwargs):
+    def validate(self, data, **extra_attr):
         """
         Verifies data with schema specified by 'citype_id'.
         Raises ValidationError if data are invalid.
         """
-        citype_id = kwargs.get(CITYPE_ID)
+        citype_id = extra_attr.get(CITYPE_ID)
         if citype_id is None:
             raise exc.ValidationError()
 

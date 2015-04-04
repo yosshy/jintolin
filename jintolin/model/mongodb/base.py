@@ -55,19 +55,19 @@ class BaseModel(object):
 
         return data
 
-    def validate(self, data, **kwargs):
+    def validate(self, data, **extra_attr):
         """
         Verifies data
         """
         pass
 
-    def create(self, data, operator=None, **kwargs):
+    def create(self, data, operator=None, **extra_attr):
         """
         Adds a new entries to DB.
         Returns its ID.
         """
         # Verify data
-        self.validate(data, **kwargs)
+        self.validate(data, **extra_attr)
 
         # Create a new entries
         id = self.get_new_id()
@@ -76,13 +76,13 @@ class BaseModel(object):
             TIMESTAMP: self.now(),
             DATA: data
         }
-        doc.update(kwargs)
+        doc.update(extra_attr)
         self.col.insert(doc)
         self.db.log.create(doc, "created", **{OPERATOR: operator, DATA: data})
         # Return ID
         return id
 
-    def update(self, id, data, operator=None, **kwargs):
+    def update(self, id, data, operator=None, **extra_attr):
         """
         Updates an entry on DB specified by 'id'.
         """
@@ -90,7 +90,7 @@ class BaseModel(object):
         self.get(id)
 
         # Verify data
-        self.validate(data, **kwargs)
+        self.validate(data, **extra_attr)
 
         # Overwrite attributes
         doc = {
@@ -98,7 +98,7 @@ class BaseModel(object):
             TIMESTAMP: self.now(),
             DATA: data
         }
-        doc.update(kwargs)
+        doc.update(extra_attr)
         result = self.col.update({ID: id}, doc)
         self.db.log.create(doc, "updated", **{OPERATOR: operator, DATA: data})
 

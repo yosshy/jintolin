@@ -15,7 +15,7 @@ class CiTypeModel(base.BaseModel):
 
     collection = 'citype'
 
-    def validate(self, data, **kwargs):
+    def validate(self, data, **extra_attr):
         """
         Verifies schema
         """
