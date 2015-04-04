@@ -91,12 +91,12 @@ class TestApiV1BaseController(object):
         id = doc['id']
         self.app.put_json(self.baseurl + id, self.sample3)
         self.app.delete(self.baseurl + id)
-        response = self.app.get(self.baseurl + '%s?type=log' % id)
+        response = self.app.get(self.baseurl + '%s/logs' % id)
         self.assertEqual(response.status_int, 200)
         doc = response.json_body
         self.assertEqual([x[LOG] for x in doc],
                          ["created", "updated", "deleted"])
 
-        response = self.app.get(self.baseurl + 'foo?type=log',
+        response = self.app.get(self.baseurl + 'foo/logs',
                                 expect_errors=True)
         self.assertEqual(response.status_int, 404)

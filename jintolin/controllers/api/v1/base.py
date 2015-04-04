@@ -14,6 +14,10 @@ class BaseController(RestController):
 
     model_name = None
 
+    _custom_actions = {
+        'logs': ['GET']
+    }
+
     @property
     def model(self):
         return getattr(model, self.model_name)
@@ -23,18 +27,11 @@ class BaseController(RestController):
         return self.model.list()
 
     @expose('json')
-    def get(self, id, type=None):
-        if type == 'log':
-            try:
-                return self.model.get_logs(id)
-            except exc.NotFound:
-                abort(404)
-
-        if type is None:
-            try:
-                return self.model.get(id)
-            except exc.NotFound:
-                abort(404)
+    def get(self, id):
+        try:
+            return self.model.get(id)
+        except exc.NotFound:
+            abort(404)
 
     @expose('json')
     def post(self):
@@ -58,5 +55,12 @@ class BaseController(RestController):
     def delete(self, id):
         try:
             self.model.delete(id)
+        except exc.NotFound:
+            abort(404)
+
+    @expose('json')
+    def logs(self, id):
+        try:
+            return self.model.get_logs(id)
         except exc.NotFound:
             abort(404)

@@ -20,7 +20,10 @@ class CiController(BaseController):
 
     model_name = "CI"
 
-    _custom_actions = {'link': ['POST']}
+    _custom_actions = {
+        'logs': ['GET'],
+        'link': ['POST']
+    }
 
     @expose('json')
     def post(self, citype_id=None):
