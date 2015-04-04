@@ -43,18 +43,14 @@ class MongodbCiModelTestCase(model_base.MongodbBaseModelTestCase,
     def setUp(self):
         super(MongodbCiModelTestCase, self).setUp()
         self.citype_id1 = self.get_new_id()
-        self.citype_id2 = self.get_new_id()
         self.DATABASE["citype"].insert({
             ID: self.citype_id1,
             TIMESTAMP: datetime.now(),
             DATA: self.sample_schema
         })
-        self.DATABASE["citype"].insert({
-            ID: self.citype_id2,
-            TIMESTAMP: datetime.now(),
-            DATA: self.sample_schema
-        })
-        self.kwargs = dict(citype_id=self.citype_id1)
+        self.sample1[CITYPE_ID] = self.citype_id1
+        self.sample2[CITYPE_ID] = self.citype_id1
+        self.sample_bad[CITYPE_ID] = self.citype_id1
 
     def _insert_data(self, doc_id, data, **kwargs):
         doc = {
@@ -72,19 +68,19 @@ class MongodbCiModelTestCase(model_base.MongodbBaseModelTestCase,
         self.assertEqual(0, len(list(self.model.list(self.get_new_id()))))
 
     def test_validate(self):
-        self.model.validate(self.sample1, **{CITYPE_ID: self.citype_id1})
-        self.model.validate(self.sample2, **{CITYPE_ID: self.citype_id1})
+        self.model.validate(self.sample1)
+        self.model.validate(self.sample2)
         self.assertRaises(exc.ValidationError,
                           self.model.validate,
                           self.sample_bad)
+        self.sample_bad.pop(CITYPE_ID)
         self.assertRaises(exc.ValidationError,
                           self.model.validate,
-                          self.sample_bad, **{CITYPE_ID: self.citype_id1})
+                          self.sample_bad)
 
     def test_link(self):
         self._insert_data(self.id1, copy(self.sample1))
-        self._insert_data(self.id2, copy(self.sample2),
-                          tid=self.citype_id2)
+        self._insert_data(self.id2, copy(self.sample2))
 
         self.model.link(self.id1, self.id2, "foo")
         doc = self.col.find_one({ID: self.id1})
@@ -101,12 +97,9 @@ class MongodbCiModelTestCase(model_base.MongodbBaseModelTestCase,
 
     def test_unlink(self):
         self._insert_data(self.id1, copy(self.sample1), **{
-            CITYPE_ID: self.citype_id1,
             LINK: {self.id2: "foo"}
         })
-        self._insert_data(self.id2, copy(self.sample2), **{
-            CITYPE_ID: self.citype_id2
-        })
+        self._insert_data(self.id2, copy(self.sample2))
 
         self.model.unlink(self.id1, self.id2)
         doc = self.col.find_one({ID: self.id1})

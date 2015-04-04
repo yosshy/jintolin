@@ -2,6 +2,7 @@
 #
 # (c)2015  Akira Yoshiyama <akirayoshiyama@gmail.com>
 
+import copy
 import jsonschema
 
 from jintolin.model.mongodb import base
@@ -24,29 +25,13 @@ class CiModel(base.BaseModel):
 
         return super(CiModel, self).list(cond=cond)
 
-    def create(self, data, operator=None, citype_id=None):
-        """
-        Adds a new entries to DB.
-        Returns its ID.
-        """
-        return super(CiModel, self).create(data,
-                                           operator=operator,
-                                           **{CITYPE_ID: citype_id})
-
-    def update(self, id, data, operator=None, citype_id=None):
-        """
-        Updates an entry on DB specified by 'id'.
-        """
-        return super(CiModel, self).update(id, data,
-                                           operator=operator,
-                                           **{CITYPE_ID: citype_id})
-
     def validate(self, data, **extra_attr):
         """
         Verifies data with schema specified by 'citype_id'.
         Raises ValidationError if data are invalid.
         """
-        citype_id = extra_attr.get(CITYPE_ID)
+        _data = copy.copy(data)
+        citype_id = _data.pop(CITYPE_ID, None)
         if citype_id is None:
             raise exc.ValidationError()
 
@@ -55,7 +40,7 @@ class CiModel(base.BaseModel):
         schema = citype[DATA]
 
         try:
-            jsonschema.validate(data, schema)
+            jsonschema.validate(_data, schema)
         except jsonschema.ValidationError as e:
             raise exc.ValidationError()
 
@@ -64,8 +49,6 @@ class CiModel(base.BaseModel):
         Adds linked_id to doc[LINK] list.
         """
         doc = self.get(id)
-        citype_id = doc[CITYPE_ID]
-        citype = self.db.citype.get(citype_id)
         link = doc.get(LINK, {})
 
         # Link not allowd if already linked from local
@@ -73,8 +56,6 @@ class CiModel(base.BaseModel):
             raise exc.LinkError()
 
         linked_doc = self.get(linked_id)
-        linked_citype_id = linked_doc[CITYPE_ID]
-        linked_citype = self.db.citype.get(linked_citype_id)
         linked_link = linked_doc.get(LINK, {})
 
         # Link not allowed if already linked from remote
@@ -98,7 +79,6 @@ class CiModel(base.BaseModel):
         """
         doc = self.get(id)
         data = doc[DATA]
-        citype = doc[CITYPE_ID]
         link = doc.get(LINK, {})
 
         if linked_id in link:
@@ -111,7 +91,6 @@ class CiModel(base.BaseModel):
             return
 
         linked_doc = self.get(linked_id)
-        linked_citype = linked_doc[CITYPE_ID]
         linked_link = linked_doc.get(LINK, {})
 
         if id in linked_link:

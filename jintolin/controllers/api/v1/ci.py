@@ -26,26 +26,6 @@ class CiController(BaseController):
     }
 
     @expose('json')
-    def post(self, citype_id=None):
-        try:
-            data = request.json
-            return {'id': self.model.create(data, citype_id=citype_id)}
-        except exc.ValidationError:
-            abort(400)
-        except exc.NotFound:
-            abort(404)
-
-    @expose('json')
-    def put(self, id, citype_id=None):
-        try:
-            data = request.json
-            self.model.update(id, data, citype_id=citype_id)
-        except exc.ValidationError:
-            abort(400)
-        except exc.NotFound:
-            abort(404)
-
-    @expose('json')
     def link(self, id):
         try:
             data = request.json

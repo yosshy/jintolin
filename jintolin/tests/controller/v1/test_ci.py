@@ -8,8 +8,6 @@ class TestApiV1CiController(TestApiV1BaseController, FunctionalTest):
 
     model_name = "CI"
     baseurl = "/api/v1/ci/"
-    posturl = "/api/v1/ci?citype_id=%s"
-    puturl = "/api/v1/ci/%s?citype_id=%s"
     linkurl = "/api/v1/ci/%s/link"
 
     sample_citype1 = {
@@ -54,10 +52,14 @@ class TestApiV1CiController(TestApiV1BaseController, FunctionalTest):
 
         self.citype_id1 = model.CITYPE.create(self.sample_citype1)
         self.citype_id2 = model.CITYPE.create(self.sample_citype2)
+        self.sample1[CITYPE_ID] = self.citype_id1
+        self.sample2[CITYPE_ID] = self.citype_id2
+        self.sample3[CITYPE_ID] = self.citype_id1
+        self.badsample[CITYPE_ID] = self.citype_id1
 
         self.model = getattr(model, self.model_name)
-        self.id1 = self.model.create(self.sample1, citype_id=self.citype_id1)
-        self.id2 = self.model.create(self.sample2, citype_id=self.citype_id2)
+        self.id1 = self.model.create(self.sample1)
+        self.id2 = self.model.create(self.sample2)
         self.sampleset = {
             self.id1: self.sample1,
             self.id2: self.sample2
@@ -72,8 +74,7 @@ class TestApiV1CiController(TestApiV1BaseController, FunctionalTest):
         model.CITYPE.delete(self.citype_id2)
 
     def test_post(self):
-        response = self.app.post_json(
-            self.posturl % self.citype_id1, self.sample3)
+        response = self.app.post_json(self.baseurl, self.sample3)
         self.assertEqual(response.status_int, 200)
         doc = response.json_body
         self.assertTrue('id' in doc)
@@ -82,42 +83,36 @@ class TestApiV1CiController(TestApiV1BaseController, FunctionalTest):
         doc = response.json_body
         self.assertEqual(doc[DATA], self.sample3)
 
-        response = self.app.post_json(
-            self.posturl % self.citype_id1,
-            self.badsample, expect_errors=True)
+        response = self.app.post_json(self.baseurl, self.badsample,
+                                      expect_errors=True)
         self.assertEqual(response.status_int, 400)
 
-        response = self.app.post_json(
-            self.posturl % "foo", self.sample3,
-            expect_errors=True)
+        self.sample3[CITYPE_ID] = "foo"
+        response = self.app.post_json(self.baseurl, self.sample3,
+                                      expect_errors=True)
         self.assertEqual(response.status_int, 404)
 
     def test_put(self):
-        response = self.app.put_json(
-            self.puturl % (self.id1, self.citype_id1), self.sample3)
+        response = self.app.put_json(self.baseurl + self.id1, self.sample3)
         self.assertEqual(response.status_int, 200)
 
         response = self.app.get(self.baseurl + self.id1)
         doc = response.json_body
         self.assertEqual(doc[DATA], self.sample3)
 
-        response = self.app.put_json(
-            self.puturl % (self.id1, self.citype_id1),
-            self.badsample, expect_errors=True)
+        response = self.app.put_json(self.baseurl + self.id1, self.badsample,
+                                     expect_errors=True)
         self.assertEqual(response.status_int, 400)
 
-        response = self.app.put_json(
-            self.puturl % ("foo", self.citype_id1),
-            self.sample3, expect_errors=True)
+        response = self.app.put_json(self.baseurl + "foo", self.sample1,
+                                     expect_errors=True)
         self.assertEqual(response.status_int, 404)
 
     def test_get_logs(self):
-        response = self.app.post_json(
-            self.posturl % self.citype_id1, self.sample1)
+        response = self.app.post_json(self.baseurl, self.sample1)
         doc = response.json_body
         id = doc['id']
-        self.app.put_json(
-            self.puturl % (id, self.citype_id1), self.sample3)
+        self.app.put_json(self.baseurl + id, self.sample3)
         self.app.delete(self.baseurl + id)
         response = self.app.get(self.baseurl + '%s/logs' % id)
         self.assertEqual(response.status_int, 200)

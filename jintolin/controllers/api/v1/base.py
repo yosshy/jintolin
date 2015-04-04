@@ -40,6 +40,8 @@ class BaseController(RestController):
             return {'id': self.model.create(data)}
         except exc.ValidationError:
             abort(400)
+        except exc.NotFound:
+            abort(404)
 
     @expose('json')
     def put(self, id):
