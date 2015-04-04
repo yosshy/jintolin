@@ -11,9 +11,16 @@ from jintolin import exception as exc
 from jintolin import model
 
 
+ACTION = 'action'
+LINKED_ID = 'linked_id'
+RELATION = 'relation'
+
+
 class CiController(BaseController):
 
     model_name = "CI"
+
+    _custom_actions = {'link': ['POST']}
 
     @expose('json')
     def post(self, citype_id=None):
@@ -31,6 +38,22 @@ class CiController(BaseController):
             data = request.json
             self.model.update(id, data, citype_id=citype_id)
         except exc.ValidationError:
+            abort(400)
+        except exc.NotFound:
+            abort(404)
+
+    @expose('json')
+    def link(self, id):
+        try:
+            data = request.json
+            action = data.get(ACTION)
+            if action == 'add':
+                self.model.link(id, data.get(LINKED_ID), data.get(RELATION))
+            elif action == 'delete':
+                self.model.unlink(id, data.get(LINKED_ID))
+            else:
+                abort(400)
+        except exc.LinkError:
             abort(400)
         except exc.NotFound:
             abort(404)

@@ -1,5 +1,5 @@
 from jintolin import model
-from jintolin.model.mongodb.const import ID, DATA, CITYPE_ID, LOG
+from jintolin.model.mongodb.const import ID, DATA, CITYPE_ID, LOG, LINK
 from jintolin.tests import FunctionalTest
 from jintolin.tests.controller.v1.base import TestApiV1BaseController
 
@@ -10,6 +10,7 @@ class TestApiV1CiController(TestApiV1BaseController, FunctionalTest):
     baseurl = "/api/v1/ci/"
     posturl = "/api/v1/ci?citype_id=%s"
     puturl = "/api/v1/ci/%s?citype_id=%s"
+    linkurl = "/api/v1/ci/%s/link"
 
     sample_citype1 = {
         u"type": u"object",
@@ -127,3 +128,46 @@ class TestApiV1CiController(TestApiV1BaseController, FunctionalTest):
         response = self.app.get(self.baseurl + 'foo?type=log',
                                 expect_errors=True)
         self.assertEqual(response.status_int, 404)
+
+    def test_link(self):
+        response = self.app.get(
+            self.baseurl + self.id1)
+        self.assertEqual(response.status_int, 200)
+        data = response.json
+        self.assertTrue(self.id2 not in data.get(LINK, {}))
+
+        data = dict(action='add', linked_id=self.id2, relation='foo')
+        response = self.app.post_json(
+            self.linkurl % self.id1, data)
+        self.assertEqual(response.status_int, 200)
+
+        response = self.app.get(
+            self.baseurl + self.id1)
+        self.assertEqual(response.status_int, 200)
+        data = response.json
+        self.assertTrue(self.id2 in data.get(LINK, {}))
+
+        response = self.app.post_json(
+            self.linkurl % self.id1, data, expect_errors=True)
+        self.assertEqual(response.status_int, 400)
+
+        data = dict(action='add', linked_id=self.get_new_id(), relation='foo')
+        response = self.app.post_json(
+            self.linkurl % self.id1, data, expect_errors=True)
+        self.assertEqual(response.status_int, 404)
+
+        data = dict(action='delete', linked_id=self.id2)
+        response = self.app.post_json(
+            self.linkurl % self.id1, data)
+        self.assertEqual(response.status_int, 200)
+
+        response = self.app.get(
+            self.baseurl + self.id1)
+        self.assertEqual(response.status_int, 200)
+        data = response.json
+        self.assertTrue(self.id2 not in data.get(LINK, {}))
+
+        data = dict(action='delete', linked_id=self.id2)
+        response = self.app.post_json(
+            self.linkurl % self.id1, data, expect_errors=True)
+        self.assertEqual(response.status_int, 400)

@@ -1,5 +1,7 @@
 import os
 from unittest import TestCase
+import uuid
+
 from pecan import set_config
 from pecan.testing import load_test_app
 
@@ -20,3 +22,6 @@ class FunctionalTest(TestCase):
 
     def tearDown(self):
         set_config({}, overwrite=True)
+
+    def get_new_id(self):
+        return str(uuid.uuid4())
