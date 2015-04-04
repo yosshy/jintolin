@@ -86,31 +86,36 @@ class MongodbCiModelTestCase(model_base.MongodbBaseModelTestCase,
         self._insert_data(self.id2, copy(self.sample2),
                           tid=self.citype_id2)
 
-        self.model.link(self.id1, self.id2)
+        self.model.link(self.id1, self.id2, "foo")
         doc = self.col.find_one({ID: self.id1})
-        self.assertEqual(doc.get(LINK), [self.id2])
+        self.assertEqual(doc.get(LINK), {self.id2: "foo"})
 
         self.assertRaises(exc.LinkError,
-                          self.model.link, self.id1, self.id2)
+                          self.model.link, self.id1, self.id2, "foo")
 
         self.assertRaises(exc.LinkError,
-                          self.model.link, self.id2, self.id1)
+                          self.model.link, self.id2, self.id1, "foo")
 
         self.assertRaises(exc.NotFound,
-                          self.model.link, self.id1, self.get_new_id())
+                          self.model.link, self.id1, self.get_new_id(), "foo")
 
     def test_unlink(self):
-        self._insert_data(self.id1, copy(self.sample1), l=[self.id2])
-        self._insert_data(self.id2, copy(self.sample2), tid=self.citype_id2)
+        self._insert_data(self.id1, copy(self.sample1), **{
+            CITYPE_ID: self.citype_id1,
+            LINK: {self.id2: "foo"}
+        })
+        self._insert_data(self.id2, copy(self.sample2), **{
+            CITYPE_ID: self.citype_id2
+        })
 
         self.model.unlink(self.id1, self.id2)
         doc = self.col.find_one({ID: self.id1})
-        self.assertEqual(doc[LINK], [])
+        self.assertEqual(doc[LINK], {})
 
-        self.col.update({ID: self.id1}, {"$set": {LINK: [self.id2]}})
+        self.col.update({ID: self.id1}, {"$set": {LINK: {self.id2: "foo"}}})
         self.model.unlink(self.id2, self.id1)
         doc = self.col.find_one({ID: self.id1})
-        self.assertEqual(doc[LINK], [])
+        self.assertEqual(doc[LINK], {})
 
         self.assertRaises(exc.LinkError,
                           self.model.unlink, self.id1, self.id2)
