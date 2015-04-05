@@ -95,6 +95,9 @@ class MongodbCiModelTestCase(model_base.MongodbBaseModelTestCase,
         self.assertRaises(exc.NotFound,
                           self.model.link, self.id1, self.get_new_id(), "foo")
 
+        self.assertRaises(exc.LinkError,
+                          self.model.link, self.id1, self.id1, "foo")
+
     def test_unlink(self):
         self._insert_data(self.id1, copy(self.sample1), **{
             LINK: {self.id2: "foo"}

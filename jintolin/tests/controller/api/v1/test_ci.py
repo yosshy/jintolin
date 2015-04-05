@@ -179,4 +179,3 @@ class TestApiV1CiController(TestApiV1BaseController, FunctionalTest):
         response = self.app.post_json(
             self.linkurl % self.id1, data, expect_errors=True)
         self.assertEqual(response.status_int, 400)
-

@@ -69,10 +69,10 @@ class MongodbBaseModelTestCase(object):
 
     def test_create(self):
 
-        id1 = self.model.create(data=self.sample1, operator="foo",
-                                **self.kwargs)
-        id2 = self.model.create(data=self.sample2, operator="bar",
-                                **self.kwargs)
+        id1 = self.model.create(data=copy(self.sample1),
+                                operator="foo", **self.kwargs)
+        id2 = self.model.create(data=copy(self.sample2),
+                                operator="bar", **self.kwargs)
         sampleset = {id1: self.sample1, id2: self.sample2}
         docs = list(self.col.find())
         self.assertEqual(len(docs), 2)
