@@ -126,10 +126,10 @@ class TestApiV1CiController(TestApiV1BaseController, FunctionalTest):
 
     def test_link(self):
         response = self.app.get(
-            self.baseurl + self.id1)
+            self.baseurl + self.id1 + "/link")
         self.assertEqual(response.status_int, 200)
         data = response.json
-        self.assertTrue(self.id2 not in data.get(LINK, {}))
+        self.assertEqual(0, len(data))
 
         data = dict(action='add', linked_id=self.id2, relation='foo')
         response = self.app.post_json(
@@ -137,11 +137,14 @@ class TestApiV1CiController(TestApiV1BaseController, FunctionalTest):
         self.assertEqual(response.status_int, 200)
 
         response = self.app.get(
-            self.baseurl + self.id1)
+            self.baseurl + self.id1 + "/link")
         self.assertEqual(response.status_int, 200)
         data = response.json
-        self.assertTrue(self.id2 in data.get(LINK, {}))
+        self.assertEqual(1, len(data))
+        self.assertEqual(self.id2, data[0][ID])
+        self.assertEqual(self.sample2, data[0][DATA])
 
+        data = dict(action='add', linked_id=self.id2, relation='foo')
         response = self.app.post_json(
             self.linkurl % self.id1, data, expect_errors=True)
         self.assertEqual(response.status_int, 400)
@@ -157,10 +160,10 @@ class TestApiV1CiController(TestApiV1BaseController, FunctionalTest):
         self.assertEqual(response.status_int, 200)
 
         response = self.app.get(
-            self.baseurl + self.id1)
+            self.baseurl + self.id1 + "/link")
         self.assertEqual(response.status_int, 200)
         data = response.json
-        self.assertTrue(self.id2 not in data.get(LINK, {}))
+        self.assertEqual(0, len(data))
 
         data = dict(action='delete', linked_id=self.id2)
         response = self.app.post_json(

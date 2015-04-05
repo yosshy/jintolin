@@ -44,10 +44,32 @@ class CiModel(base.BaseModel):
         except jsonschema.ValidationError as e:
             raise exc.ValidationError()
 
+    def get_linked(self, id):
+        """
+        Retrieve linked CIs
+        """
+        doc = self.get(id)
+        linked_kv = doc.get(LINK, {})
+        linked_ids = linked_kv.keys()
+
+        linking_docs = self.col.find({LINK: {"$exists": {id: True}}})
+        linked_ids.extend([x[ID] for x in linking_docs])
+
+        linked_ids = list(set(linked_ids))
+        if id in linked_ids:
+            linked_ids.remove(id)
+
+        linked_docs = list(self.col.find({ID: {"$in": linked_ids}}))
+        return linked_docs
+
     def link(self, id, linked_id, relation, operator=None):
         """
         Adds linked_id to doc[LINK] list.
         """
+        # Link not allowd if already linked from local
+        if id == linked_id:
+            raise exc.LinkError()
+
         doc = self.get(id)
         link = doc.get(LINK, {})
 

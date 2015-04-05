@@ -22,11 +22,18 @@ class CiController(BaseController):
 
     _custom_actions = {
         'logs': ['GET'],
-        'link': ['POST']
+        'link': ['GET', 'POST']
     }
 
     @expose('json')
-    def link(self, id):
+    def get_link(self, id):
+        try:
+            return self.model.get_linked(id)
+        except exc.NotFound:
+            abort(404)
+
+    @expose('json')
+    def post_link(self, id):
         try:
             data = request.json
             action = data.get(ACTION)

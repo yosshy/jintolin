@@ -115,3 +115,16 @@ class MongodbCiModelTestCase(model_base.MongodbBaseModelTestCase,
 
         self.assertRaises(exc.NotFound,
                           self.model.unlink, self.id1, self.get_new_id())
+
+    def test_get_linked(self):
+        self._insert_data(self.id1, copy(self.sample1))
+        self._insert_data(self.id2, copy(self.sample2), **{
+                          LINK: {
+                              self.id1: "buddy",
+                          }})
+        docs = self.model.get_linked(self.id1)
+        self.assertEqual(1, len(docs))
+        self.assertEqual(self.id2, docs[0][ID])
+        docs = self.model.get_linked(self.id2)
+        self.assertEqual(1, len(docs))
+        self.assertEqual(self.id1, docs[0][ID])
