@@ -1,7 +1,7 @@
 from jintolin import model
 from jintolin.model.mongodb.const import ID, DATA, CITYPE_ID, LOG, LINK
 from jintolin.tests import FunctionalTest
-from jintolin.tests.controller.v1.base import TestApiV1BaseController
+from .base import TestApiV1BaseController
 
 
 class TestApiV1CiController(TestApiV1BaseController, FunctionalTest):
@@ -169,3 +169,14 @@ class TestApiV1CiController(TestApiV1BaseController, FunctionalTest):
         response = self.app.post_json(
             self.linkurl % self.id1, data, expect_errors=True)
         self.assertEqual(response.status_int, 400)
+
+        response = self.app.get(
+            self.baseurl + self.get_new_id() + "/link",
+            expect_errors=True)
+        self.assertEqual(response.status_int, 404)
+
+        data = dict(action='append', linked_id=self.id2)
+        response = self.app.post_json(
+            self.linkurl % self.id1, data, expect_errors=True)
+        self.assertEqual(response.status_int, 400)
+

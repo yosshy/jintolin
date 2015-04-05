@@ -1,5 +1,5 @@
 from jintolin.tests import FunctionalTest
-from jintolin.tests.controller.v1.base import TestApiV1BaseController
+from .base import TestApiV1BaseController
 
 
 class TestApiV1CitypeController(TestApiV1BaseController, FunctionalTest):
