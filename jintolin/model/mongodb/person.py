@@ -2,13 +2,32 @@
 #
 # (c)2015  Akira Yoshiyama <akirayoshiyama@gmail.com>
 
+import logging
+
+import jsonschema
 from passlib.hash import sha256_crypt
 
 from jintolin import exception as exc
 from jintolin.model.mongodb import base
+from .const import DATA
 
-NAME = 'name'
-PASSWORD = 'password'
+NAME = u'name'
+PASSWORD = u'password'
+
+SCHEMA = {
+    "type": "object",
+    "properties": {
+        NAME: {
+            "type": "string",
+            "minLength": 1
+        },
+        PASSWORD: {
+            "type": "string",
+            "minLength": 8
+        },
+    },
+    "required": [NAME, PASSWORD]
+}
 
 
 class PersonModel(base.BaseModel):
@@ -19,22 +38,27 @@ class PersonModel(base.BaseModel):
         """
         Verifies person document
         """
-        for i in [NAME, PASSWORD]:
-            if i not in data:
-                raise exc.ValidationError()
-            if not isinstance(data[i], basestring):
-                raise exc.ValidationError()
-            if len(data[i]) == 0:
-                raise exc.ValidationError()
+        try:
+            jsonschema.validate(data, SCHEMA)
+        except jsonschema.ValidationError as e:
+            raise exc.ValidationError()
 
-        data[PASSWORD] = sha256_crypt.encrypt(str(data[PASSWORD]))
+        data[PASSWORD] = sha256_crypt.encrypt(unicode(data[PASSWORD]))
 
-    def validate_password(self, user, password):
+    def verify_password(self, user, password):
         """
         Verifies password
         """
-        doc = self.col.find_one({NAME: user})
-        if doc is None:
-            raise exc.NotFound()
+        try:
+            jsonschema.validate({NAME: user, PASSWORD: password}, SCHEMA)
+        except jsonschema.ValidationError as e:
+            raise exc.AuthError()
 
-        return sha256_crypt.verify(password, str(doc[PASSWORD]))
+        doc = self.col.find_one({"%s.%s" % (DATA, NAME): unicode(user)})
+        if doc is None:
+            raise exc.AuthError()
+
+        if sha256_crypt.verify(password, unicode(doc[DATA][PASSWORD])):
+            return
+
+        raise exc.AuthError()

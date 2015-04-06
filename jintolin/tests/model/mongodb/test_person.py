@@ -10,6 +10,7 @@ from jintolin.model.mongodb.const import (
 
 
 NAME = u"name"
+PASSWORD = u"password"
 
 
 class MongodbPersonModelTestCase(model_base.MongodbBaseModelTestCase,
@@ -20,12 +21,12 @@ class MongodbPersonModelTestCase(model_base.MongodbBaseModelTestCase,
 
     sample1 = {
         u"name": u"hoge",
-        u"password": u"fuga"
+        u"password": u"fugafuga"
     }
 
     sample2 = {
         u"name": u"foo",
-        u"password": u"bar"
+        u"password": u"barbarbar"
     }
 
     def setUp(self):
@@ -117,6 +118,7 @@ class MongodbPersonModelTestCase(model_base.MongodbBaseModelTestCase,
                          [x[LOG] for x in logs])
 
     def test_get_logs(self):
+
         self._insert_log(self.id1, "created", **{DATA: copy(self.sample1)})
         self._insert_log(self.id1, "updated", **{DATA: copy(self.sample2)})
         self._insert_log(self.id1, "deleted")
@@ -127,3 +129,46 @@ class MongodbPersonModelTestCase(model_base.MongodbBaseModelTestCase,
                          [x[LOG] for x in logs])
         self.assertEqual([self.sample1[NAME], self.sample2[NAME], None],
                          [x.get(DATA, {}).get(NAME) for x in logs])
+
+    def test_validate(self):
+
+        self.assertRaises(exc.ValidationError,
+                          self.model.validate,
+                          {"password": "hoge"})
+
+        self.assertRaises(exc.ValidationError,
+                          self.model.validate,
+                          {"name": "", "password": "hoge"})
+
+        self.assertRaises(exc.ValidationError,
+                          self.model.validate,
+                          {"name": "hoge"})
+
+        self.assertRaises(exc.ValidationError,
+                          self.model.validate,
+                          {"name": "hoge", "password": ""})
+
+        self.assertRaises(exc.ValidationError,
+                          self.model.validate,
+                          {"name": "hoge", "password": ["hoge"]})
+
+    def test_verify_password(self):
+
+        self.model.create(data=copy(self.sample1),
+                          operator="foo", **self.kwargs)
+
+        self.assertEqual(None,
+                         self.model.verify_password(self.sample1[NAME],
+                                                    self.sample1[PASSWORD]))
+
+        self.assertRaises(exc.AuthError,
+                          self.model.verify_password,
+                          self.sample1[NAME], "badpassword")
+
+        self.assertRaises(exc.AuthError,
+                          self.model.verify_password,
+                          "boo", "hogehoge")
+
+        self.assertRaises(exc.AuthError,
+                          self.model.verify_password,
+                          "hoge", ["hoge"])

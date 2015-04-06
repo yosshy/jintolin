@@ -21,3 +21,7 @@ class ValidationError(JintolinException):
 
 class LinkError(DbError):
     pass
+
+
+class AuthError(JintolinException):
+    pass

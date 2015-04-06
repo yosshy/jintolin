@@ -15,23 +15,23 @@ class TestApiV1PersonController(TestApiV1BaseController, FunctionalTest):
     baseurl = "/api/v1/person/"
 
     sample1 = {
-        u"name": u"account1",
-        u"password": u"foo"
+        "name": "account1",
+        "password": "foofoofoo"
     }
 
     sample2 = {
-        u"name": u"account2",
-        u"password": u"bar"
+        "name": "account2",
+        "password": "barbarbar"
     }
 
     sample3 = {
-        u"name": u"account3",
-        u"password": u"boo"
+        "name": "account3",
+        "password": "boobooboo"
     }
 
     badsample = {
-        u"name": u"account1",
-        u"password": u""
+        "name": "account1",
+        "password": u""
     }
 
     def setUp(self):
