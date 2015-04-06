@@ -8,7 +8,7 @@ import jsonschema
 from passlib.hash import sha256_crypt
 
 from jintolin import exception as exc
-from jintolin.model.mongodb import base
+from . import base
 from .const import DATA
 
 NAME = u'name'

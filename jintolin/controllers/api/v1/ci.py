@@ -6,9 +6,9 @@ from pecan.core import abort, request
 from pecan import expose
 from pecan.rest import RestController
 
-from jintolin.controllers.api.v1.base import BaseController
 from jintolin import exception as exc
 from jintolin import model
+from .base import BaseController
 
 
 ACTION = 'action'

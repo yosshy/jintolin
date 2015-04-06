@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from jintolin import exception as exc
-from jintolin.tests.model.mongodb import base
+from . import base
 from jintolin.model.mongodb.const import (
     ID, DOC_ID, TIMESTAMP, LOG, DATA, OPERATOR)
 

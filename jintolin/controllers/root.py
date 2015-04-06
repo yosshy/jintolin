@@ -5,7 +5,7 @@
 from pecan import expose, redirect
 from webob.exc import status_map
 
-from jintolin.controllers.api import ApiController
+from .api import ApiController
 
 
 class RootController(object):

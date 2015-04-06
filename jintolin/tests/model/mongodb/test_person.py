@@ -3,8 +3,8 @@ from datetime import datetime
 from unittest import TestCase
 
 from jintolin import exception as exc
-from jintolin.tests.model.mongodb import base
-from jintolin.tests.model.mongodb import model_base
+from . import base
+from . import model_base
 from jintolin.model.mongodb.const import (
     ID, DOC_ID, TIMESTAMP, LOG, DATA, OPERATOR)
 

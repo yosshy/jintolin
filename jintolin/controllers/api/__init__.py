@@ -4,7 +4,7 @@
 
 from pecan.rest import RestController
 
-from jintolin.controllers.api.v1 import V1ApiController
+from .v1 import V1ApiController
 
 
 class ApiController(RestController):

@@ -4,7 +4,10 @@
 
 import pymongo
 
-from jintolin.model.mongodb import ci, citype, log, person
+from . import ci
+from . import citype
+from . import log
+from . import person
 
 
 DATABASE = None

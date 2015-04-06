@@ -7,7 +7,7 @@ import uuid
 import pymongo
 
 from jintolin import exception as exc
-from jintolin.model.mongodb.const import (
+from .const import (
     ID, DOC_ID, LOG, TIMESTAMP, OPERATOR, DATA)
 
 

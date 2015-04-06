@@ -8,7 +8,7 @@ from pecan.rest import RestController
 
 from jintolin import exception as exc
 from jintolin import model
-from jintolin.controllers.api.v1.base import BaseController
+from .base import BaseController
 
 
 class CiTypeController(BaseController):

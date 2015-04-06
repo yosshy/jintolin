@@ -8,7 +8,7 @@ import uuid
 import pymongo
 
 from jintolin import exception as exc
-from jintolin.model.mongodb.const import ID, DOC_ID, DATA, OPERATOR, TIMESTAMP
+from .const import ID, DOC_ID, DATA, OPERATOR, TIMESTAMP
 
 
 class BaseModel(object):

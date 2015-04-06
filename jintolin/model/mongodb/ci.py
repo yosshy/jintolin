@@ -5,10 +5,10 @@
 import copy
 import jsonschema
 
-from jintolin.model.mongodb import base
-from jintolin.model.mongodb.const import (
-    ID, CITYPE_ID, DATA, LINK, LINKED_ID, OPERATOR, RELATION, TIMESTAMP)
 from jintolin import exception as exc
+from . import base
+from .const import (
+    ID, CITYPE_ID, DATA, LINK, LINKED_ID, OPERATOR, RELATION, TIMESTAMP)
 
 
 class CiModel(base.BaseModel):
