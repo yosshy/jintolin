@@ -2,7 +2,7 @@
 #
 # (c)2015  Akira Yoshiyama <akirayoshiyama@gmail.com>
 
-import copy
+from copy import copy
 import jsonschema
 
 from jintolin import exception as exc
@@ -30,7 +30,7 @@ class CiModel(base.BaseModel):
         Verifies data with schema specified by 'citype_id'.
         Raises ValidationError if data are invalid.
         """
-        _data = copy.copy(data)
+        _data = copy(data)
         citype_id = _data.pop(CITYPE_ID, None)
         if citype_id is None:
             raise exc.ValidationError()
